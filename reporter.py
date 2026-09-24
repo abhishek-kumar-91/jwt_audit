@@ -17,7 +17,7 @@ SEVERITY_ORDER = {
 
 def print_header(root):
     console.print()
-    console.print("JWT-AUDIT | Java JWT Security Assessment")
+    console.print("JWT-AUDIT | JWT Security Assessment")
     console.print(f"Target: {root}")
     console.print()
 

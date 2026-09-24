@@ -1,6 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
-
 @dataclass
 class Finding:
     file: str
@@ -9,9 +7,6 @@ class Finding:
     library: str
     operation: str
     evidence: str
-    confidence: str = "medium"
-
-
     rule_id: str = "DISCOVERY"
     title: str = "JWT Implementation Detected"
     severity: str = "INFO"

@@ -6,12 +6,12 @@ from .models import Finding
 from .rules import run_security_rules
 
 LANGUAGES = {
-        ".py": "python",
-        ".java": "Java", 
-        ".js": "Javascript",
-        ".jsx": "Javascript",
-        ".ts": "Javascript/Typescript",
-        ".tsx": "Javascript/Typescript",
+    ".py": "Python",
+    ".java": "Java",
+    ".js": "JavaScript",
+    ".jsx": "JavaScript",
+    ".ts": "JavaScript/TypeScript",
+    ".tsx": "JavaScript/TypeScript",
 }
 
 
@@ -44,6 +44,17 @@ JWT_SIGNATURES = {
             "from authlib import jose",
             "authlib.jose",
         ],
+
+        "Flask-JWT-Extended": [
+            "flask_jwt_extended",
+            "create_access_token(",
+            "jwt_required(",
+        ],
+
+        "FastAPI JWT": [
+            "fastapi_jwt_auth",
+            "AuthJWT",
+        ],
     },
 
     # ========================================================
@@ -68,6 +79,12 @@ JWT_SIGNATURES = {
             "com.auth0.jwt",
             "JWT.create(",
             "JWT.require(",
+        ],
+
+        "Spring Security Nimbus": [
+            "org.springframework.security.oauth2.jwt",
+            "NimbusJwtDecoder",
+            "JwtDecoder",
         ],
     },
 
@@ -96,6 +113,16 @@ JWT_SIGNATURES = {
             "jwtVerify(",
             "decodeJwt(",
         ],
+
+        "express-jwt": [
+            "express-jwt",
+            "expressjwt(",
+        ],
+
+        "koa-jwt": [
+            "koa-jwt",
+            "jwt({",
+        ],
     },
 
     # ========================================================
@@ -123,6 +150,16 @@ JWT_SIGNATURES = {
             "jwtVerify(",
             "decodeJwt(",
         ],
+
+        "express-jwt": [
+            "express-jwt",
+            "expressjwt(",
+        ],
+
+        "koa-jwt": [
+            "koa-jwt",
+            "jwt({",
+        ],
     },
 }
 
@@ -140,6 +177,21 @@ OPERATION_PATTERNS = {
         (
             r"\bjwt\.decode\s*\(",
             "decode",
+        ),
+
+        (
+            r"\bcreate_access_token\s*\(",
+            "create/sign",
+        ),
+
+        (
+            r"\b(?:jwt_required|get_jwt|get_jwt_identity)\s*\(",
+            "verify",
+        ),
+
+        (
+            r"\bAuthJWT\s*\(",
+            "verify",
         ),
     ],
 
@@ -194,6 +246,11 @@ OPERATION_PATTERNS = {
             r"\bJWTParser\.parse\s*\(",
             "parse",
         ),
+
+        (
+            r"\b(?:JwtDecoder|NimbusJwtDecoder)\b",
+            "parse/verify",
+        ),
     ],
 
     "JavaScript": [
@@ -227,6 +284,16 @@ OPERATION_PATTERNS = {
             r"\bnew\s+SignJWT\s*\(",
             "create/sign",
         ),
+
+        (
+            r"\bexpressjwt\s*\(",
+            "verify",
+        ),
+
+        (
+            r"\bjwt\s*\(\s*\{",
+            "verify",
+        ),
     ],
 
     "JavaScript/TypeScript": [
@@ -259,6 +326,16 @@ OPERATION_PATTERNS = {
         (
             r"\bnew\s+SignJWT\s*\(",
             "create/sign",
+        ),
+
+        (
+            r"\bexpressjwt\s*\(",
+            "verify",
+        ),
+
+        (
+            r"\bjwt\s*\(\s*\{",
+            "verify",
         ),
     ],
 }
@@ -355,7 +432,15 @@ def analyze_file(path: Path) -> List[Finding]:
     )
 
     if not operations:
-        return []
+        # A recognized JWT adapter can still be an implementation when its
+        # API is configured through middleware or decorators.
+        operations = [
+            (
+                1,
+                "configuration",
+                "JWT library configuration detected",
+            )
+        ]
 
     findings = []
 
