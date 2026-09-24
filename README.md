@@ -195,6 +195,30 @@ Example:
 python -m jwt_audit scan ./test-project
 ```
 
+The scanner inventories source files, manifests, environment/configuration files,
+framework signals, dependencies, authentication-related files, and JWT-related
+files before running JWT rules. It does not execute repository code.
+
+Machine-readable reports are available for CI and review workflows:
+
+```bash
+python -m jwt_audit scan ./project --format json --output report.json
+python -m jwt_audit scan ./project --format markdown --output report.md
+python -m jwt_audit scan ./project --format html --output report.html
+```
+
+Optional filters:
+
+```bash
+python -m jwt_audit scan ./project --language Python
+python -m jwt_audit scan ./project --severity high
+```
+
+The JSON model includes repository inventory plus finding context such as
+category, CWE, OWASP mapping, explanation, attack scenario, remediation, and a
+source-to-security-boundary data-flow hint. Static findings remain evidence
+based: `REVIEW` means the implementation requires manual data-flow validation.
+
 Windows:
 
 ```powershell

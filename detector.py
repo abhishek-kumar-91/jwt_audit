@@ -10,8 +10,14 @@ LANGUAGES = {
     ".java": "Java",
     ".js": "JavaScript",
     ".jsx": "JavaScript",
+    ".mjs": "JavaScript",
+    ".cjs": "JavaScript",
     ".ts": "JavaScript/TypeScript",
     ".tsx": "JavaScript/TypeScript",
+    ".cs": "C#",
+    ".go": "Go",
+    ".php": "PHP",
+    ".rb": "Ruby",
 }
 
 
@@ -159,6 +165,52 @@ JWT_SIGNATURES = {
         "koa-jwt": [
             "koa-jwt",
             "jwt({",
+        ],
+    },
+
+    "C#": {
+        "ASP.NET JwtBearer": [
+            "Microsoft.AspNetCore.Authentication.JwtBearer",
+            "AddJwtBearer",
+            "TokenValidationParameters",
+        ],
+        "System.IdentityModel.Tokens.Jwt": [
+            "System.IdentityModel.Tokens.Jwt",
+            "JwtSecurityTokenHandler",
+            "JwtSecurityToken",
+        ],
+    },
+
+    "Go": {
+        "golang-jwt": [
+            "github.com/golang-jwt/jwt",
+            "jwt.Parse(",
+            "jwt.NewWithClaims(",
+        ],
+        "lestrrat-go/jwx": [
+            "github.com/lestrrat-go/jwx",
+            "jwt.Parse(",
+        ],
+    },
+
+    "PHP": {
+        "firebase/php-jwt": [
+            "Firebase\\JWT",
+            "JWT::encode(",
+            "JWT::decode(",
+        ],
+        "Laravel Passport": [
+            "Laravel\\Passport",
+            "HasApiTokens",
+        ],
+    },
+
+    "Ruby": {
+        "ruby-jwt": [
+            "require 'jwt'",
+            'require "jwt"',
+            "JWT.encode(",
+            "JWT.decode(",
         ],
     },
 }
@@ -337,6 +389,29 @@ OPERATION_PATTERNS = {
             r"\bjwt\s*\(\s*\{",
             "verify",
         ),
+    ],
+
+    "C#": [
+        (r"\bAddJwtBearer\s*\(", "configuration"),
+        (r"\bJwtSecurityTokenHandler\b", "parse/verify"),
+        (r"\bJwtSecurityToken\s*\(", "create/sign"),
+        (r"\bTokenValidationParameters\b", "verify"),
+    ],
+
+    "Go": [
+        (r"\bjwt\.Parse\s*\(", "parse/verify"),
+        (r"\bjwt\.NewWithClaims\s*\(", "create/sign"),
+        (r"\bjwt\.ParseWithClaims\s*\(", "parse/verify"),
+    ],
+
+    "PHP": [
+        (r"\bJWT::encode\s*\(", "create/sign"),
+        (r"\bJWT::decode\s*\(", "decode"),
+    ],
+
+    "Ruby": [
+        (r"\bJWT\.encode\s*\(", "create/sign"),
+        (r"\bJWT\.decode\s*\(", "decode"),
     ],
 }
 

@@ -22,6 +22,79 @@ def make_finding(
     confidence,
     remediation,
 ):
+    metadata = {
+        "JWT-001": (
+            "Signature verification",
+            "CWE-347",
+            "A07:2021 Identification and Authentication Failures",
+            "The source contains a JWT signing or verification flow that requires security review.",
+            "If claims are trusted without complete verification, an attacker may forge identity or authorization claims.",
+        ),
+        "JWT-002": (
+            "Algorithm validation",
+            "CWE-327",
+            "A02:2021 Cryptographic Failures",
+            "JWT algorithm acceptance must be explicit and constrained to the application's trust model.",
+            "An attacker may exploit an accepted algorithm or key-type mismatch to bypass signature validation.",
+        ),
+        "JWT-003": (
+            "Unsigned tokens",
+            "CWE-347",
+            "A02:2021 Cryptographic Failures",
+            "The implementation must reject unsigned JWTs for authenticated operations.",
+            "An attacker could alter claims in a token using the none algorithm if it is accepted.",
+        ),
+        "JWT-004": (
+            "Secret management",
+            "CWE-798",
+            "A07:2021 Identification and Authentication Failures",
+            "Signing material should be supplied through protected runtime configuration or key management.",
+            "A repository reader or compromised build artifact could recover the signing secret and forge tokens.",
+        ),
+        "JWT-005": (
+            "Secret strength",
+            "CWE-521",
+            "A02:2021 Cryptographic Failures",
+            "HMAC signing secrets must be sufficiently long and unpredictable.",
+            "A weak secret may be guessed or brute-forced, enabling token forgery.",
+        ),
+        "JWT-006": (
+            "Token lifetime",
+            "CWE-613",
+            "A07:2021 Identification and Authentication Failures",
+            "Authentication tokens should have bounded lifetimes appropriate to their purpose.",
+            "A stolen token may remain usable for an excessive period when expiration is absent or ineffective.",
+        ),
+        "JWT-007": (
+            "Issuer validation",
+            "CWE-287",
+            "A07:2021 Identification and Authentication Failures",
+            "Validate the expected issuer when multiple token issuers or trust domains exist.",
+            "A token from an unintended issuer could be accepted as an application credential.",
+        ),
+        "JWT-008": (
+            "Audience validation",
+            "CWE-287",
+            "A07:2021 Identification and Authentication Failures",
+            "Validate the expected audience when tokens are intended for distinct services.",
+            "A token issued for another service could be replayed against this service.",
+        ),
+        "JWT-009": (
+            "Unverified parsing",
+            "CWE-347",
+            "A07:2021 Identification and Authentication Failures",
+            "Decoded JWT claims must not cross a security trust boundary before cryptographic validation.",
+            "An attacker may modify an unverified role, subject, or permission claim before authorization.",
+        ),
+        "JWT-010": (
+            "Verification failure handling",
+            "CWE-287",
+            "A07:2021 Identification and Authentication Failures",
+            "Malformed, expired, or unverifiable tokens must fail closed and reject the request.",
+            "Swallowed verification errors or authenticated fallbacks can turn invalid credentials into access.",
+        ),
+    }.get(rule_id, ("JWT security", "", "", "JWT security behavior requires review.", "Improper JWT handling may weaken authentication or authorization."))
+    category, cwe, owasp, explanation, attack_scenario = metadata
     return Finding(
         file=file,
         line=line,
@@ -35,6 +108,12 @@ def make_finding(
         status=status,
         confidence=confidence,
         remediation=remediation,
+        category=category,
+        cwe=cwe,
+        owasp=owasp,
+        explanation=explanation,
+        attack_scenario=attack_scenario,
+        data_flow=f"{file}:{line} -> {operation} -> JWT security boundary",
     )
 
 
